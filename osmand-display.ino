@@ -6,7 +6,10 @@
 #include "commands.h"
 #include "turns.h"
 
-DirectionCommandData* directionCommandData;
+Epd display;
+
+uint8_t readCommand;
+DirectionCommandData *directionCommandData;
 
 void setup()
 {
@@ -26,22 +29,33 @@ void tryToReadCommand()
     if (Serial.available())
     {
         uint8_t command = Serial.read();
+        bool unknownCommand = false;
+        bool commandReadSuccessfully = false;
 
         switch (command)
         {
         case COMMAND_DIRECTION:
             Serial.println(F("tryToReadCommand: command_read: command=DIRECTION"));
-            if (!readDirectionCommandData())
-            {
-                Serial.println(F("tryToReadCommand: command_data_read_failed"));
-            }
-            displayShowDirection();
+            commandReadSuccessfully = readDirectionCommandData();
             break;
 
         default:
+            unknownCommand = true;
             Serial.print(F("tryToReadCommand: unknown_command_read: command="));
             Serial.println(command, HEX);
             break;
+        }
+
+        if (!unknownCommand)
+        {
+            if (!commandReadSuccessfully)
+            {
+                Serial.println(F("tryToReadCommand: command_data_read_failed"));
+            }
+            else
+            {
+                readCommand = command;
+            }
         }
     }
 }
@@ -71,25 +85,34 @@ bool readDirectionCommandData()
     return true;
 }
 
+void initDisplayAndClearMemory()
+{
+    display.Init();
+    display.ClearMemory();
+}
+
+void powerOffDisplay()
+{
+    display.Sleep();
+    display.PowerOff();
+}
+
 void displayClear()
 {
-    Epd epd;
-    epd.Init();
-    epd.ClearMemory();
+    initDisplayAndClearMemory();
+
     // Reliable cleanup.
     for (int i = 0; i < 3; i++)
     {
-        epd.DisplayFrameInversed();
+        display.DisplayFrameInversed();
     }
-    epd.Sleep();
-    epd.PowerOff();
+
+    powerOffDisplay();
 }
 
 void displayShowDirection()
 {
-    Epd epd;
-    epd.Init();
-    epd.ClearMemory();
+    initDisplayAndClearMemory();
 
     const uint8_t turnImageTop = 12;
     const uint8_t distanceStringTop = EPD_HEIGHT - 40 - 12;
@@ -99,53 +122,53 @@ void displayShowDirection()
     {
     // C, continue
     case 1:
-        epd.SetFrameMemory(turn_c.data_pgm, true, (EPD_WIDTH - turn_c.width) / 2, turnImageTop,
-                           turn_c.width, turn_c.height, false);
+        display.SetFrameMemory(turn_c.data_pgm, true, (EPD_WIDTH - turn_c.width) / 2, turnImageTop,
+                               turn_c.width, turn_c.height, false);
         break;
     // TL, turn left
     case 2:
-        epd.SetFrameMemory(turn_tl.data_pgm, true, (EPD_WIDTH - turn_tl.width) / 2, turnImageTop,
-                           turn_tl.width, turn_tl.height, false);
+        display.SetFrameMemory(turn_tl.data_pgm, true, (EPD_WIDTH - turn_tl.width) / 2, turnImageTop,
+                               turn_tl.width, turn_tl.height, false);
         break;
     // TSLL, turn slightly left
     case 3:
-        epd.SetFrameMemory(turn_tsll.data_pgm, true, (EPD_WIDTH - turn_tsll.width) / 2, turnImageTop,
-                           turn_tsll.width, turn_tsll.height, false);
+        display.SetFrameMemory(turn_tsll.data_pgm, true, (EPD_WIDTH - turn_tsll.width) / 2, turnImageTop,
+                               turn_tsll.width, turn_tsll.height, false);
         break;
     // TSHLL, turn sharp left
     case 4:
-        epd.SetFrameMemory(turn_tshl.data_pgm, true, (EPD_WIDTH - turn_tshl.width) / 2, turnImageTop,
-                           turn_tshl.width, turn_tshl.height, false);
+        display.SetFrameMemory(turn_tshl.data_pgm, true, (EPD_WIDTH - turn_tshl.width) / 2, turnImageTop,
+                               turn_tshl.width, turn_tshl.height, false);
         break;
     // TR, turn right
     case 5:
-        epd.SetFrameMemory(turn_tl.data_pgm, true, (EPD_WIDTH - turn_tl.width) / 2, turnImageTop,
-                           turn_tl.width, turn_tl.height, true);
+        display.SetFrameMemory(turn_tl.data_pgm, true, (EPD_WIDTH - turn_tl.width) / 2, turnImageTop,
+                               turn_tl.width, turn_tl.height, true);
         break;
     // TSLR, turn slightly right
     case 6:
-        epd.SetFrameMemory(turn_tsll.data_pgm, true, (EPD_WIDTH - turn_tsll.width) / 2, turnImageTop,
-                           turn_tsll.width, turn_tsll.height, true);
+        display.SetFrameMemory(turn_tsll.data_pgm, true, (EPD_WIDTH - turn_tsll.width) / 2, turnImageTop,
+                               turn_tsll.width, turn_tsll.height, true);
         break;
     // TSHLL, turn sharp right
     case 7:
-        epd.SetFrameMemory(turn_tshl.data_pgm, true, (EPD_WIDTH - turn_tshl.width) / 2, turnImageTop,
-                           turn_tshl.width, turn_tshl.height, true);
+        display.SetFrameMemory(turn_tshl.data_pgm, true, (EPD_WIDTH - turn_tshl.width) / 2, turnImageTop,
+                               turn_tshl.width, turn_tshl.height, true);
         break;
     // TU, U-turn
     case 10:
-        epd.SetFrameMemory(turn_tu.data_pgm, true, (EPD_WIDTH - turn_tu.width) / 2, turnImageTop,
-                           turn_tu.width, turn_tu.height, false);
+        display.SetFrameMemory(turn_tu.data_pgm, true, (EPD_WIDTH - turn_tu.width) / 2, turnImageTop,
+                               turn_tu.width, turn_tu.height, false);
         break;
     // TRU, right U-turn
     case 11:
-        epd.SetFrameMemory(turn_tu.data_pgm, true, (EPD_WIDTH - turn_tu.width) / 2, turnImageTop,
-                           turn_tu.width, turn_tu.height, true);
+        display.SetFrameMemory(turn_tu.data_pgm, true, (EPD_WIDTH - turn_tu.width) / 2, turnImageTop,
+                               turn_tu.width, turn_tu.height, true);
         break;
     // Not supported – small black square
     default:
         unsigned char empty[] = {0xFF, 0XFF};
-        epd.SetFrameMemory(empty, false, 98, turnImageTop, 4, 4, false);
+        display.SetFrameMemory(empty, false, 98, turnImageTop, 4, 4, false);
         break;
     }
 #pragma endregion
@@ -200,17 +223,28 @@ void displayShowDirection()
     Paint paint(frameBuffer, EPD_WIDTH, FontSegoeUI36.height);
     paint.Clear(UNCOLORED);
     paint.DrawStringAt((paint.GetWidth() - distanceStringWidth) / 2, 0, distanceString, &FontSegoeUI36, COLORED);
-    epd.SetFrameMemory(paint.GetImage(), false, 0, 160, paint.GetWidth(), paint.GetHeight(), false);
+    display.SetFrameMemory(paint.GetImage(), false, 0, 160, paint.GetWidth(), paint.GetHeight(), false);
 
 #pragma endregion
 
-    epd.DisplayFrameInversed();
+    display.DisplayFrameInversed();
 
-    epd.Sleep();
-    epd.PowerOff();
+    powerOffDisplay();
 }
 
 void loop()
 {
     tryToReadCommand();
+
+    switch (readCommand)
+    {
+    case COMMAND_DIRECTION:
+        displayShowDirection();
+        break;
+
+    default:
+        break;
+    }
+
+    readCommand = 0;
 }

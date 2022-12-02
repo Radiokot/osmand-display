@@ -307,17 +307,17 @@ void Epd::SetFrameMemory(
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
     x &= 0xF8;
     image_width &= 0xF8;
-    if (x + image_width >= this->width)
+    if (x + image_width >= EPD_WIDTH)
     {
-        x_end = this->width - 1;
+        x_end = EPD_WIDTH - 1;
     }
     else
     {
         x_end = x + image_width - 1;
     }
-    if (y + image_height >= this->height)
+    if (y + image_height >= EPD_HEIGHT)
     {
-        y_end = this->height - 1;
+        y_end = EPD_HEIGHT - 1;
     }
     else
     {

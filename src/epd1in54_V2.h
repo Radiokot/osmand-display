@@ -61,9 +61,6 @@
 class Epd : EpdIf
 {
 public:
-    unsigned long width;
-    unsigned long height;
-
     Epd();
     ~Epd();
 
