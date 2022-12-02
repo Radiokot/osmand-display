@@ -1,4 +1,7 @@
+#include "src/epd1in54_V2.h"
+
 #include "commands.h"
+#include "turns.h"
 
 void setup()
 {
@@ -9,6 +12,8 @@ void powerOnSetup()
 {
     Serial.begin(9600);
     Serial.println(F("powerOnSetup: serial_set_up"));
+    displayClear();
+    Serial.println(F("powerOnSetup: display_cleared"));
 }
 
 void tryToReadCommand()
@@ -58,6 +63,20 @@ bool readDirectionCommandData()
     Serial.println(data->distanceM);
 
     return true;
+}
+
+void displayClear()
+{
+    Epd epd;
+    epd.Init();
+    epd.ClearMemory();
+    // Reliable cleanup.
+    for (int i = 0; i < 3; i++)
+    {
+        epd.DisplayFrameInversed();
+    }
+    epd.Sleep();
+    epd.PowerOff();
 }
 
 void loop()
