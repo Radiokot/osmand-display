@@ -7,6 +7,7 @@
 #include "turns.h"
 
 Epd display;
+uint8_t partialRefreshesCount;
 
 uint8_t readCommand;
 DirectionCommandData *directionCommandData;
@@ -85,9 +86,9 @@ bool readDirectionCommandData()
     return true;
 }
 
-void initDisplayAndClearMemory()
+void initDisplayAndClearMemory(bool partial)
 {
-    display.Init();
+    display.Init(partial);
     display.ClearMemory();
 }
 
@@ -99,7 +100,7 @@ void powerOffDisplay()
 
 void displayClear()
 {
-    initDisplayAndClearMemory();
+    initDisplayAndClearMemory(false);
 
     // Reliable cleanup.
     for (int i = 0; i < 3; i++)
@@ -112,7 +113,13 @@ void displayClear()
 
 void displayShowDirection()
 {
-    initDisplayAndClearMemory();
+    bool partial = partialRefreshesCount != 5;
+    partialRefreshesCount = (partialRefreshesCount + 1) % 6;
+
+    initDisplayAndClearMemory(partial);
+
+    Serial.print(F("displayShowDirection: display_initialized: partial="));
+    Serial.println(partial);
 
     const uint8_t turnImageTop = 12;
     const uint8_t distanceStringTop = EPD_HEIGHT - 40 - 12;
@@ -230,6 +237,8 @@ void displayShowDirection()
     display.DisplayFrameInversed();
 
     powerOffDisplay();
+
+    Serial.println(F("displayShowDirection: done"));
 }
 
 void loop()

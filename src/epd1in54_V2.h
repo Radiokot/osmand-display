@@ -70,7 +70,7 @@ public:
      *
      * @returns 0 in case of successful init, -1 otherwise.
      */
-    int Init(void);
+    int Init(bool partial);
 
     /**
      * Sends given command to the display.
