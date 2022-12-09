@@ -1,4 +1,8 @@
+#ifndef __COMMANDS_H
+#define __COMMANDS_H
+
 #define COMMAND_DIRECTION 0x10
+#define COMMAND_CLEAR 0x20
 
 typedef struct DirectionCommandData
 {
@@ -12,3 +16,5 @@ typedef struct DirectionCommandData
     */
     uint32_t distanceM;
 } DirectionCommandData;
+
+#endif

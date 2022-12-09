@@ -40,6 +40,11 @@ void tryToReadCommand()
             commandReadSuccessfully = readDirectionCommandData();
             break;
 
+        case COMMAND_CLEAR:
+            Serial.println(F("tryToReadCommand: command_read: command=CLEAR"));
+            commandReadSuccessfully = true;
+            break;
+
         default:
             unknownCommand = true;
             Serial.print(F("tryToReadCommand: unknown_command_read: command="));
@@ -102,6 +107,8 @@ void displayClear()
 {
     initDisplayAndClearMemory(false);
 
+    Serial.println(F("displayClear: display_initialized"));
+    
     // Reliable cleanup.
     for (int i = 0; i < 3; i++)
     {
@@ -109,6 +116,8 @@ void displayClear()
     }
 
     powerOffDisplay();
+
+    Serial.println(F("displayClear: done"));
 }
 
 void displayShowDirection()
@@ -249,6 +258,10 @@ void loop()
     {
     case COMMAND_DIRECTION:
         displayShowDirection();
+        break;
+
+    case COMMAND_CLEAR:
+        displayClear();
         break;
 
     default:
