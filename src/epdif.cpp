@@ -28,6 +28,8 @@
 #include "epdif.h"
 #include <SPI.h>
 
+#include "../prescaler.h"
+
 EpdIf::EpdIf() {
 };
 
@@ -43,7 +45,7 @@ int EpdIf::DigitalRead(int pin) {
 }
 
 void EpdIf::DelayMs(unsigned int delaytime) {
-    delay(delaytime);
+    delay(delaytime / SYSTEM_CLOCK_DIVIDER);
 }
 
 void EpdIf::SpiTransfer(unsigned char data) {
@@ -60,7 +62,8 @@ int EpdIf::IfInit(void) {
     pinMode(EPD_BUSY_PIN, INPUT);
     
     SPI.begin();
-    SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setClockDivider(SPI_CLOCK_DIV2);
      
     return 0;
 }

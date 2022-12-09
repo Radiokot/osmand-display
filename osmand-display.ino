@@ -1,3 +1,6 @@
+#include <GyverPower.h>
+#include <powerConstants.h>
+
 #include <stdio.h>
 
 #include "src/epd1in54_V2.h"
@@ -5,6 +8,7 @@
 
 #include "commands.h"
 #include "turns.h"
+#include "prescaler.h"
 
 Epd display;
 uint8_t partialRefreshesCount;
@@ -19,8 +23,13 @@ void setup()
 
 void powerOnSetup()
 {
-    Serial.begin(9600);
+    power.setSleepMode(POWERDOWN_SLEEP);
+    power.setSystemPrescaler(SYSTEM_PRESCALER);
+    Serial.begin(9600 * SYSTEM_CLOCK_DIVIDER);
     Serial.println(F("powerOnSetup(): serial_set_up"));
+    Serial.print(F("powerOnSetup(): prescaler_set: divider="));
+    Serial.println((uint32_t)SYSTEM_CLOCK_DIVIDER);
+
     displayClear();
     Serial.println(F("powerOnSetup(): display_cleared"));
 }
