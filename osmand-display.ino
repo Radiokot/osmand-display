@@ -20,9 +20,9 @@ void setup()
 void powerOnSetup()
 {
     Serial.begin(9600);
-    Serial.println(F("powerOnSetup: serial_set_up"));
+    Serial.println(F("powerOnSetup(): serial_set_up"));
     displayClear();
-    Serial.println(F("powerOnSetup: display_cleared"));
+    Serial.println(F("powerOnSetup(): display_cleared"));
 }
 
 void tryToReadCommand()
@@ -36,18 +36,18 @@ void tryToReadCommand()
         switch (command)
         {
         case COMMAND_DIRECTION:
-            Serial.println(F("tryToReadCommand: command_read: command=DIRECTION"));
+            Serial.println(F("tryToReadCommand(): command_read: command=DIRECTION"));
             commandReadSuccessfully = readDirectionCommandData();
             break;
 
         case COMMAND_CLEAR:
-            Serial.println(F("tryToReadCommand: command_read: command=CLEAR"));
+            Serial.println(F("tryToReadCommand(): command_read: command=CLEAR"));
             commandReadSuccessfully = true;
             break;
 
         default:
             unknownCommand = true;
-            Serial.print(F("tryToReadCommand: unknown_command_read: command="));
+            Serial.print(F("tryToReadCommand(): unknown_command_read: command="));
             Serial.println(command, HEX);
             break;
         }
@@ -56,7 +56,7 @@ void tryToReadCommand()
         {
             if (!commandReadSuccessfully)
             {
-                Serial.println(F("tryToReadCommand: command_data_read_failed"));
+                Serial.println(F("tryToReadCommand(): command_data_read_failed"));
             }
             else
             {
@@ -71,7 +71,7 @@ bool readDirectionCommandData()
     uint8_t size = sizeof(DirectionCommandData);
     if (Serial.available() < size)
     {
-        Serial.print(F("readDirectionCommandData: insufficient_bytes_available: required="));
+        Serial.print(F("readDirectionCommandData(): insufficient_bytes_available: required="));
         Serial.println(size);
         return false;
     }
@@ -83,7 +83,7 @@ bool readDirectionCommandData()
     }
     directionCommandData = (DirectionCommandData *)dataBuffer;
 
-    Serial.print(F("readDirectionCommandData: data_read: turnType="));
+    Serial.print(F("readDirectionCommandData(): data_read: turnType="));
     Serial.print(directionCommandData->turnType);
     Serial.print(F(", distanceM="));
     Serial.println(directionCommandData->distanceM);
@@ -107,8 +107,8 @@ void displayClear()
 {
     initDisplayAndClearMemory(false);
 
-    Serial.println(F("displayClear: display_initialized"));
-    
+    Serial.println(F("displayClear(): display_initialized"));
+
     // Reliable cleanup.
     for (int i = 0; i < 3; i++)
     {
@@ -117,7 +117,7 @@ void displayClear()
 
     powerOffDisplay();
 
-    Serial.println(F("displayClear: done"));
+    Serial.println(F("displayClear(): done"));
 }
 
 void displayShowDirection()
@@ -127,7 +127,7 @@ void displayShowDirection()
 
     initDisplayAndClearMemory(partial);
 
-    Serial.print(F("displayShowDirection: display_initialized: partial="));
+    Serial.print(F("displayShowDirection(): display_initialized: partial="));
     Serial.println(partial);
 
     const uint8_t turnImageTop = 12;
@@ -247,7 +247,7 @@ void displayShowDirection()
 
     powerOffDisplay();
 
-    Serial.println(F("displayShowDirection: done"));
+    Serial.println(F("displayShowDirection(): done"));
 }
 
 void loop()
