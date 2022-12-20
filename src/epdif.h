@@ -31,11 +31,16 @@
 #include <Arduino.h>
 
 // Pin definition
-#define EPD_VCC_PIN         4
+#define EPD_VCC_PIN         6
+#define EPD_BUSY_PIN        7
 #define EPD_RST_PIN         8
 #define EPD_DC_PIN          9
 #define EPD_CS_PIN          10
-#define EPD_BUSY_PIN        7
+/**
+ * DIN 11
+ * CLK 13
+ * 12 – SPI MISO (input), not used
+*/
 
 class EpdIf {
 public:
