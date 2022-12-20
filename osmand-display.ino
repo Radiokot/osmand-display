@@ -10,6 +10,8 @@
 #include "turns.h"
 #include "prescaler.h"
 
+#define BLUETOOTH_VCC_PIN 2
+
 Epd display;
 uint8_t partialRefreshesCount;
 
@@ -23,6 +25,9 @@ void setup()
 
 void powerOnSetup()
 {
+    pinMode(BLUETOOTH_VCC_PIN, OUTPUT);
+    digitalWrite(BLUETOOTH_VCC_PIN, HIGH);
+    
     power.setSleepMode(POWERDOWN_SLEEP);
     power.setSystemPrescaler(SYSTEM_PRESCALER);
     Serial.begin(9600 * SYSTEM_CLOCK_DIVIDER);
