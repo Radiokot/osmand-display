@@ -3,6 +3,7 @@
 
 #define COMMAND_DIRECTION 0x10
 #define COMMAND_CLEAR 0x20
+#define COMMAND_FRAME 0x30
 
 typedef struct DirectionCommandData
 {

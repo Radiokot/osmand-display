@@ -27,10 +27,10 @@ void powerOnSetup()
 {
     pinMode(BLUETOOTH_VCC_PIN, OUTPUT);
     digitalWrite(BLUETOOTH_VCC_PIN, HIGH);
-    
+
     power.setSleepMode(POWERDOWN_SLEEP);
     power.setSystemPrescaler(SYSTEM_PRESCALER);
-    Serial.begin(9600 * SYSTEM_CLOCK_DIVIDER);
+    Serial.begin(38400 * SYSTEM_CLOCK_DIVIDER);
     Serial.println(F("powerOnSetup(): serial_set_up"));
     Serial.print(F("powerOnSetup(): prescaler_set: divider="));
     Serial.println((uint32_t)SYSTEM_CLOCK_DIVIDER);
@@ -56,6 +56,11 @@ void tryToReadCommand()
 
         case COMMAND_CLEAR:
             Serial.println(F("tryToReadCommand(): command_read: command=CLEAR"));
+            commandReadSuccessfully = true;
+            break;
+
+        case COMMAND_FRAME:
+            Serial.println(F("tryToReadCommand(): command_read: command=FRAME"));
             commandReadSuccessfully = true;
             break;
 
@@ -264,6 +269,40 @@ void displayShowDirection()
     Serial.println(F("displayShowDirection(): done"));
 }
 
+void displayShowFrameFromSerial()
+{
+    display.Init(false);
+
+    uint32_t w, h;
+    w = (EPD_WIDTH % 8 == 0) ? (EPD_WIDTH / 8) : (EPD_WIDTH / 8 + 1);
+    h = EPD_HEIGHT;
+    uint32_t bytesToRead = w * h;
+
+    Serial.print(F("displayShowFrameFromSerial(): display_initialized, bytes_to_read="));
+    Serial.println(bytesToRead);
+
+    uint32_t bytesRead = 0;
+
+    display.SendCommand(WRITE_BLACK_RAM);
+    for (int i = 0; i < bytesToRead; i++)
+    {
+        while (Serial.available() == 0)
+        {
+            delay(SYSTEM_CLOCK_DIVIDER);
+        }
+
+        display.SendData(Serial.read());
+        bytesRead++;
+    }
+
+    Serial.print(F("displayShowFrameFromSerial(): frame_written"));
+
+    display.DisplayFrame();
+    powerOffDisplay();
+
+    Serial.println(F("displayShowFrameFromSerial(): done"));
+}
+
 void loop()
 {
     tryToReadCommand();
@@ -276,6 +315,10 @@ void loop()
 
     case COMMAND_CLEAR:
         displayClear();
+        break;
+
+    case COMMAND_FRAME:
+        displayShowFrameFromSerial();
         break;
 
     default:
