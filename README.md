@@ -1,4 +1,19 @@
 # OsmAnd Display
+A wireless E-Ink display for OsmAnd navigation directions.
+It receives directions from OsmAnd through the [Android app](https://github.com/Radiokot/osmand-display-app) and shows them on the display. The communication is done over the BLE serial.
+
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/5675681/210539138-c739653d-2bbe-474f-b061-48d86704e82c.png" width="400" alt="Prototyping"/>
+  <img src="https://user-images.githubusercontent.com/5675681/210539040-98e129a2-e714-4e51-86d5-f5c6a99e340d.png" width="169" alt="On a bike"/>
+</p>
+
+## Key components
+- **Arduino Pro Mini** – 5V version but the frequency is divided in 4
+- **1.54inch e-Paper Module (B)** – no quite good option for the use-case, it is slow and temperature dependant. The display is used in BW mode as BWR full refresh takes **15 seconds**
+- **JDY-23** BLE 5.0 module
+- **Li-Po battery**
+- **TP4056** battery charging module
+- **AMS1117** voltage stabilizer
 
 ## Commands
 | Name | Description | Code | Payload | Example |
