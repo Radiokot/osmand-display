@@ -17,6 +17,8 @@ uint8_t partialRefreshesCount;
 
 uint8_t readCommand;
 DirectionCommandData *directionCommandData;
+uint8_t frameDataCommandDataSize;
+uint8_t frameDataCommandDataBuffer[COMMAND_FRAME_DATA_MAX_SIZE];
 
 void setup()
 {
@@ -39,6 +41,39 @@ void powerOnSetup()
     Serial.println(F("powerOnSetup(): display_cleared"));
 }
 
+void loop()
+{
+    tryToReadCommand();
+
+    switch (readCommand)
+    {
+    case COMMAND_DIRECTION:
+        displayShowDirection();
+        break;
+
+    case COMMAND_CLEAR:
+        displayClear();
+        break;
+
+    case COMMAND_FRAME_PREPARE:
+        displayPrepareForFrame();
+        break;
+
+    case COMMAND_FRAME_DATA:
+        displayWriteFrameData();
+        break;
+
+    case COMMAND_FRAME_SHOW:
+        displayShowFrame();
+        break;
+
+    default:
+        break;
+    }
+
+    readCommand = 0;
+}
+
 void tryToReadCommand()
 {
     if (Serial.available())
@@ -59,8 +94,20 @@ void tryToReadCommand()
             commandReadSuccessfully = true;
             break;
 
-        case COMMAND_FRAME:
-            Serial.println(F("tryToReadCommand(): command_read: command=FRAME"));
+        case COMMAND_FRAME_PREPARE:
+            Serial.println(F("tryToReadCommand(): command_read: command=FRAME_PREPARE"));
+            commandReadSuccessfully = true;
+            break;
+
+        case COMMAND_FRAME_DATA:
+            // Logging through the Serial while receiving a data burst
+            // breaks everything.
+            // Serial.println(F("tryToReadCommand(): command_read: command=FRAME_DATA"));
+            commandReadSuccessfully = readFrameDataCommandData();
+            break;
+
+        case COMMAND_FRAME_SHOW:
+            Serial.println(F("tryToReadCommand(): command_read: command=FRAME_SHOW"));
             commandReadSuccessfully = true;
             break;
 
@@ -106,6 +153,46 @@ bool readDirectionCommandData()
     Serial.print(directionCommandData->turnType);
     Serial.print(F(", distanceM="));
     Serial.println(directionCommandData->distanceM);
+
+    return true;
+}
+
+bool readFrameDataCommandData()
+{
+    // TODO: Introduce timeout.
+    while (Serial.available() == 0)
+    {
+        delay(1);
+    }
+
+    uint8_t bufferSize = Serial.read();
+    if (bufferSize > COMMAND_FRAME_DATA_MAX_SIZE)
+    {
+        Serial.print(F("readFrameDataCommandData(): size_too_large: max="));
+        Serial.println(COMMAND_FRAME_DATA_MAX_SIZE);
+        return false;
+    }
+
+    // Logging through the Serial while receiving a data burst
+    // breaks everything.
+    // Serial.print(F("readFrameDataCommandData(): size_read: size="));
+    // Serial.println(bufferSize);
+
+    frameDataCommandDataSize = bufferSize;
+    for (int i = 0; i < bufferSize; i++)
+    {
+        // TODO: Introduce timeout.
+        while (Serial.available() == 0)
+        {
+            delay(1);
+        }
+
+        frameDataCommandDataBuffer[i] = Serial.read();
+    }
+
+    // Logging through the Serial while receiving a data burst
+    // breaks everything.
+    // Serial.println(F("readFrameDataCommandData(): data_read"));
 
     return true;
 }
@@ -269,61 +356,38 @@ void displayShowDirection()
     Serial.println(F("displayShowDirection(): done"));
 }
 
-void displayShowFrameFromSerial()
+void displayPrepareForFrame()
 {
     display.Init(false);
 
-    uint32_t w, h;
-    w = (EPD_WIDTH % 8 == 0) ? (EPD_WIDTH / 8) : (EPD_WIDTH / 8 + 1);
-    h = EPD_HEIGHT;
-    uint32_t bytesToRead = w * h;
-
-    Serial.print(F("displayShowFrameFromSerial(): display_initialized, bytes_to_read="));
-    Serial.println(bytesToRead);
-
-    uint32_t bytesRead = 0;
+    Serial.println(F("displayPrepareForFrame(): display_initialized"));
 
     display.SendCommand(WRITE_BLACK_RAM);
-    for (int i = 0; i < bytesToRead; i++)
-    {
-        while (Serial.available() == 0)
-        {
-            delay(SYSTEM_CLOCK_DIVIDER);
-        }
 
-        display.SendData(Serial.read());
-        bytesRead++;
+    Serial.println(F("displayPrepareForFrame(): done"));
+}
+
+void displayWriteFrameData()
+{
+    // TODO: Check if the display is prepared for the frame.
+
+    for (int i = 0; i < frameDataCommandDataSize; i++)
+    {
+        display.SendData(frameDataCommandDataBuffer[i]);
     }
 
-    Serial.print(F("displayShowFrameFromSerial(): frame_written"));
+    // Logging through the Serial while receiving a data burst
+    // breaks everything.
+    // Serial.print(F("displayWriteFrameData(): done: bytes_written="));
+    // Serial.println(frameDataCommandDataSize);
+}
+
+void displayShowFrame()
+{
+    // TODO: Check if the display is prepared for the frame.
 
     display.DisplayFrame();
     powerOffDisplay();
 
     Serial.println(F("displayShowFrameFromSerial(): done"));
-}
-
-void loop()
-{
-    tryToReadCommand();
-
-    switch (readCommand)
-    {
-    case COMMAND_DIRECTION:
-        displayShowDirection();
-        break;
-
-    case COMMAND_CLEAR:
-        displayClear();
-        break;
-
-    case COMMAND_FRAME:
-        displayShowFrameFromSerial();
-        break;
-
-    default:
-        break;
-    }
-
-    readCommand = 0;
 }
