@@ -7,7 +7,7 @@
 #define COMMAND_FRAME_DATA      0x31
 #define COMMAND_FRAME_SHOW      0x32
 
-#define COMMAND_FRAME_DATA_MAX_SIZE 64
+#define COMMAND_FRAME_DATA_MAX_SIZE 62
 
 typedef struct DirectionCommandData
 {
