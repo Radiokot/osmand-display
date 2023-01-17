@@ -1,4 +1,4 @@
-# OsmAnd Display
+# <img src="https://github.com/Radiokot/osmand-display-app/raw/main/app/src/main/res/mipmap-hdpi/ic_launcher.png" alt="Icon" style="vertical-align: bottom; height: 1.2em;"/> OsmAnd Display
 A wireless E-Ink display for OsmAnd navigation directions.
 It receives directions from OsmAnd through the [Android app](https://github.com/Radiokot/osmand-display-app) and shows them on the display. The communication is done over the BLE serial.
 
