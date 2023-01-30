@@ -10,7 +10,7 @@ It receives directions from OsmAnd through the [Android app](https://github.com/
 ## Key components
 - **Arduino Pro Mini** – 5V version but the frequency is divided in 4
 - **1.54inch e-Paper Module (B)** – is not really the suitable option for this use case, it is slow and temperature-dependent. The display is used in the BW mode as BWR full refresh takes **15 seconds**
-- **JDY-23** BLE 5.0 module
+- **JDY-23** BLE 5.0 module – should be configured with the STARTEN mode 0 (power on sleep) for power saving
 - **Li-Po battery**
 - **TP4056** battery charging module
 - **AMS1117** voltage stabilizer
