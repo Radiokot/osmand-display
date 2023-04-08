@@ -13,6 +13,8 @@ The device receives data from the [Android app](https://github.com/Radiokot/osma
   <img src="https://user-images.githubusercontent.com/5675681/212536029-b758ba95-dd6e-4a5c-be77-41d6c6c35408.png" width="225" alt="On a bike"/>
 </p>
 
+📒 [How it was built](https://blog.radiokot.com.ua/bike-nav-display)
+
 ## Key components
 - **Arduino Pro Mini** – 5V version but the frequency is divided in 4
 - **1.54inch e-Paper Module (B)** – is not really the suitable option for this use case, it is slow and temperature-dependent. The display is used in the BW mode as BWR full refresh takes **15 seconds**
