@@ -1,6 +1,12 @@
-# <img src="https://github.com/Radiokot/osmand-display-app/raw/main/app/src/main/res/mipmap-hdpi/ic_launcher.png" alt="Icon" style="vertical-align: bottom; height: 1.2em;"/> OsmAnd Display
-A wireless E-Ink display for OsmAnd navigation directions.
-It receives directions from OsmAnd through the [Android app](https://github.com/Radiokot/osmand-display-app) and shows them on the display. The communication is done over the BLE serial.
+# <img src="https://github.com/Radiokot/osmand-display-app/raw/main/app/src/main/res/mipmap-hdpi/ic_launcher.png" alt="Icon" style="vertical-align: bottom; height: 1.2em;"/> Bike navigation display
+A wireless E-Ink display that helps me navigate through my bike rides.
+
+The display is capable of:
+- Showing the current location on the map, which is rotated according to the bearing
+- Showing a track on the map
+- Showing step-by-step navigation directions from OsmAnd, which was the original purpose of the display, but turned out to be useless
+
+The device receives data from the [Android app](https://github.com/Radiokot/osmand-display-app) over the BLE serial.
 
 <p float="left">
   <img src="https://user-images.githubusercontent.com/5675681/210539138-c739653d-2bbe-474f-b061-48d86704e82c.png" width="400" alt="Prototyping"/>
