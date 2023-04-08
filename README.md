@@ -1,5 +1,5 @@
 # <img src="https://github.com/Radiokot/osmand-display-app/raw/main/app/src/main/res/mipmap-hdpi/ic_launcher.png" alt="Icon" style="vertical-align: bottom; height: 1.2em;"/> Bike navigation display
-A wireless E-Ink display that helps me navigate through my bike rides.
+A wireless Arduino-based E-Ink display that helps me navigate through my bike rides.
 
 The display is capable of:
 - Showing the current location on the map, which is rotated according to the bearing
