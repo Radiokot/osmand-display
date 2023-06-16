@@ -21,7 +21,7 @@ The device receives data from the [Android app](https://github.com/Radiokot/osma
 - **JDY-23** BLE 5.0 module – should be configured with the STARTEN mode 0 (power on sleep) for power saving
 - **Li-Po battery**
 - **TP4056** battery charging module
-- **AMS1117** voltage stabilizer
+- **AMS1117** voltage stabilizer was in the prototype, but turned out to be useless (JDY-23 works fine at Li-Po max voltage)
 
 ## Commands
 | Name | Description | Code | Payload | Example |
